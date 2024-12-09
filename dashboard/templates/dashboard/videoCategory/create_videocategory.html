@@ -1,0 +1,102 @@
+
+
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %} 
+{% if instance %}Edit Video Category{% else %}Edit Video Category{% endif %}
+{% endblock %}
+{% block body %}
+<title>{% if instance %}Edit Video Category{% else %}Edit Video Category{% endif %}
+</title>
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <h4 class="page-title">{% if form.instance %}Edit Video Category{% else %}Add Video Category{% endif %}
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+                      
+                        <form method="post" enctype="multipart/form-data" action="">
+                            {% csrf_token %}
+                            {{form.media}}
+                                {% comment %} {% if messages %}
+                                {% for msg in messages %}
+                                    <div class="alert alert-{{ msg.tags }} alert-dismissible text-bg-{{ msg.tags }} border-0 fade show" role="alert">
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        <strong>{% if msg.tags == 'success' %}Success{% elif msg.tags == 'warning' %}Warning{% endif %} - </strong>{{ msg.message }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %} {% endcomment %}
+                
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Video category name</label>
+                                                <input type="text" name="{{ form.category.name }}" id="{{ form.category.id_for_label }}" class="form-control"
+                                                value="{{ form.category.value|default_if_none:'' }}" placeholder="Enter categoy name" required>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-auto">
+                                                {% if form.instance.pk %}
+                                                    <button type="submit" class="btn btn-danger chat-send waves-effect waves-light">Update</button>
+                                                {% else %}
+                                                    <button type="submit" class="btn btn-danger chat-send waves-effect waves-light">Add</button>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <!-- end row -->
+
+                                </div> <!-- end card-->
+                            </div> <!-- end col-->
+                        </div>
+                        <!-- end row-->
+                    </form>
+
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+
+                <script>
+                    $(document).ready(function() {
+                        $("#category").change(function() {
+                            var url = $("#form").attr("data-courses-url");
+                            var programmingId = $(this).val();
+                            console.log(programmingId);
+                            $.ajax({
+                                url: url,
+                                data: {
+                                    'programming': programmingId
+                                },
+                                success: function(data) {
+                                    $("#courses").html(data);
+                                    //console.log(data);
+                                },
+                                error:function(data){
+                                    console.log(data);
+                                }
+                            });
+                        });
+                    });
+                </script>
+{%endblock%}

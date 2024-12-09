@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <!-- App favicon -->
+    <link
+      rel="shortcut icon"
+      href="{{company_detail.logo.url}}"
+      style="border-radius: 50px"
+    />
+
+    <title>My ENT studio</title>
+    {% comment %}
+    <link rel="stylesheet" href="style.css" />
+    {% endcomment %}
+    <style>
+      #alert-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+      }
+      .alert {
+        padding: 15px 20px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        color: white;
+        opacity: 0;
+        transition: opacity 0.6s;
+      }
+      .alert-success {
+        background-color: #4caf50;
+      }
+      .alert-warning {
+        background-color: #ff9800;
+      }
+      .show {
+        opacity: 1;
+      }
+    </style>
+    <style>
+      @import url("https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap");
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, #444444, #2f3a72, #444444);
+      }
+      ::selection {
+        background: #4158d0;
+        color: #fff;
+      }
+      .wrapper {
+        width: 100%;
+        max-width: 400px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        padding: 20px;
+      }
+      .wrapper .title {
+        font-size: 36px;
+        font-weight: 700;
+        text-align: center;
+        line-height: 100px;
+        color: #fff;
+        background: linear-gradient(135deg, #494949, #2f3a72);
+        padding: 20px 0;
+        border-radius: 12px 12px 0 0;
+        margin-bottom: 30px; /* Add space below the title */
+      }
+      .wrapper form {
+        padding: 0; /* Remove padding from form */
+      }
+      .wrapper form .field {
+        position: relative;
+        margin-bottom: 20px; /* Space between fields */
+      }
+      .wrapper form .field input {
+        height: 50px;
+        width: 100%;
+        padding: 15px 20px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 25px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        background: #fafafa;
+      }
+      .wrapper form .field input:focus,
+      .wrapper form .field input:valid {
+        border-color: #4158d0;
+        box-shadow: 0 0 8px rgba(65, 88, 208, 0.2);
+      }
+      .wrapper form .field label {
+        position: absolute;
+        top: 50%;
+        left: 20px;
+        color: #999;
+        font-weight: 500;
+        font-size: 16px;
+        pointer-events: none;
+        transform: translateY(-50%);
+        transition: all 0.3s ease;
+        background: #fff;
+        padding: 0 5px;
+      }
+      .wrapper form .field input:focus ~ label,
+      .wrapper form .field input:valid ~ label {
+        top: -10px;
+        font-size: 14px;
+        color: #4158d0;
+      }
+      .wrapper form .content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 20px; /* Space below content section */
+      }
+      .wrapper form .content .checkbox {
+        display: flex;
+        align-items: center;
+      }
+      .wrapper form .content input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+      }
+      .wrapper form .content .pass-link {
+        color: #4158d0;
+      }
+      .wrapper form .field input[type="submit"] {
+        color: #fff;
+        border: none;
+        padding: 15px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        background: linear-gradient(135deg, #494949, #2f3a72);
+        transition: background 0.3s ease, transform 0.2s ease;
+        border-radius: 25px;
+        margin-top: 20px; /* Add space above the button */
+      }
+      .wrapper form .field input[type="submit"]:hover {
+        background: #2d4373;
+        transform: translateY(-2px);
+      }
+      .wrapper form .signup-link {
+        color: #555;
+        margin-top: 20px;
+        text-align: center;
+      }
+      .wrapper form .pass-link a,
+      .wrapper form .signup-link a {
+        color: #4158d0;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+      .wrapper form .pass-link a:hover,
+      .wrapper form .signup-link a:hover {
+        color: #2d4373;
+        text-decoration: underline;
+      }
+      /* Responsive Design */
+      @media (max-width: 480px) {
+        .wrapper {
+          width: 90%;
+          max-width: 350px;
+        }
+        .wrapper .title {
+          font-size: 32px;
+          line-height: 80px;
+          margin-bottom: 20px; /* Adjust bottom margin for small screens */
+        }
+        .wrapper form .field input {
+          font-size: 14px;
+        }
+        .wrapper form .field input[type="submit"] {
+          font-size: 14px;
+          padding: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="alert-container"></div>
+    <div class="wrapper">
+      <div class="title">Welcome !</div>
+      <form method="POST" action="{% url 'dashboard:login' %}">
+        {% csrf_token %}
+        <div class="field">
+          <input
+            name="email"
+            type="email"
+            id="email"
+            class="form-control"
+            autocomplete="email"
+            required
+          />
+          <label for="email">Email Address</label>
+        </div>
+        <div class="field">
+          <input
+            type="password"
+            name="password"
+            id="pass"
+            class="form-control"
+            required
+          />
+          <label>Password</label>
+        </div>
+        <div class="content">
+          <div class="checkbox">
+            <input type="checkbox" id="remember-me" name="remember_me" />
+            <label for="remember-me">Remember me</label>
+          </div>
+        </div>
+        <div class="field">
+          <input type="submit" value="Login" />
+        </div>
+      </form>
+    </div>
+
+    <script>
+      function showAlert(message, type) {
+          const alertContainer = document.getElementById('alert-container');
+          const alert = document.createElement('div');
+          alert.className = `alert alert-${type}`;
+          alert.innerHTML = message;
+          alertContainer.appendChild(alert);
+
+          setTimeout(() => {
+              alert.className += " show";
+          }, 10);
+
+          setTimeout(() => {
+              alert.style.opacity = "0";
+              setTimeout(() => {
+                  alertContainer.removeChild(alert);
+              }, 600);
+          }, 5000);
+      }
+
+      // Display Django messages as popup alerts
+      {% if messages %}
+          {% for message in messages %}
+              showAlert("{{ message }}", "{{ message.tags }}");
+          {% endfor %}
+      {% endif %}
+    </script>
+  </body>
+</html>

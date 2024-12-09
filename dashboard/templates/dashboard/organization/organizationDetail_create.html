@@ -1,0 +1,123 @@
+
+
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}
+Organization setting
+{% endblock %}
+{% block body %}
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <h4 class="page-title">{% if instance %}Edit company detail{% else %}Add company detail{% endif %}
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+                        <form method="post" enctype="multipart/form-data" action="{% if instance %}{% url 'dashboard:company_detail'  %}{% else %}{% url 'dashboard:company_detail' %}{% endif %}">
+                            {% csrf_token %}
+                            {{form.media}}
+                            {{form.errors}}
+                
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+
+                                        <div class="row">
+                                            <!-- Email and Name Fields -->
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Company name</label>
+                                                    <input type="text" name="{{ form.organization_name.name }}" id="{{ form.organization_name.id_for_label }}" class="form-control"
+                                                    value="{% if instance %}{{ instance.organization_name }}{% endif %}" placeholder="Enter name" required>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Company email</label>
+                                                    <input type="text" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" class="form-control"
+                                                    value="{% if instance %}{{ instance.email }}{% endif %}" placeholder="Enter email" required>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Company address</label>
+                                                    <input type="text" name="{{ form.address.name }}" id="{{ form.address.id_for_label }}" class="form-control"
+                                                    value="{% if instance %}{{ instance.address }}{% endif %}" placeholder="Enter address" required>
+                                                </div>
+
+                                            </div>
+                                
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Phone number</label>
+                                                    <input type="number" name="{{ form.phone_no.name }}" id="{{ form.phone_no.id_for_label }}" class="form-control"
+                                                    value="{% if instance %}{{ instance.phone_no }}{% endif %}" placeholder="Enter phone number" required>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="{{ form.logo.id_for_label }}" class="form-label">Logo :</label>
+                                                    <input type="file" name="{{ form.logo.name }}" id="{{ form.logo.id_for_label }}" class="form-control" {% if not instance %}required{% endif %} onchange="showPreview(this);">
+                                                    <div id="logoContainer" style="width:auto; height:auto;">
+                                                        <img class="img-fluid" id="logoPreview" src="{% if instance %}{{ instance.logo.url }}{% endif %}" alt="" >
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="col-auto">
+                                                {% if form.instance.pk %}
+                                                    <button type="submit" class="btn btn-danger chat-send waves-effect waves-light">Update</button>
+                                                {% else %}
+                                                    <button type="submit" class="btn btn-danger chat-send waves-effect waves-light">Add</button>
+                                                {% endif %}
+                                            </div>
+
+                                        <!-- end row -->
+                                </div> <!-- end card-->
+                            </div> <!-- end col-->
+                        </div>
+                        <!-- end row-->
+                    </form>
+
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+
+                <script>
+                    $(document).ready(function() {
+                        $("#category").change(function() {
+                            var url = $("#form").attr("data-courses-url");
+                            var programmingId = $(this).val();
+                            console.log(programmingId);
+                            $.ajax({
+                                url: url,
+                                data: {
+                                    'programming': programmingId
+                                },
+                                success: function(data) {
+                                    $("#courses").html(data);
+                                    //console.log(data);
+                                },
+                                error:function(data){
+                                    console.log(data);
+                                }
+                            });
+                        });
+                    });
+                </script>
+       {%endblock%}

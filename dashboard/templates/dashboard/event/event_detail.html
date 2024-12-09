@@ -1,0 +1,84 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}
+Event Detail
+{% endblock %}
+
+{% block body %}
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <h4 class="page-title">Event Detail</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Event Basic Detail</h2>
+                            <p class="card-text"><strong>Category: </strong> {{ event.category }}</p>
+                            <p class="card-text"><strong>Genre: </strong> {{ event.genre }}</p>
+                            {% comment %} <p class="card-text"><strong>Description:</strong> {{ event.description }}</p> {% endcomment %}
+                            <p class="card-text"><strong>Event Date:</strong> {{ event.event_date }}</p>
+                            {% comment %} <img src="{{ event.image.url }}" class="img-fluid" alt="Event Image" style="width: 100px; height: auto;"> {% endcomment %}
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Location detail</h2>
+                            <p class="card-text"><strong>Location :</strong> {{ event.location }}</p>
+                            <p class="card-text"><strong>Latitude :</strong> {{ event.latitude }}</p>
+                            <p class="card-text"><strong>Longitude :</strong> {{ event.longitude }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Voting time</h2>
+                            <p class="card-text"><strong>Voting Start Time:</strong> {{ event.voting_start_time }}</p>
+                            <p class="card-text"><strong>Voting End Time:</strong> {{ event.voting_end_time }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Participation time</h2>
+                            <p class="card-text"><strong>Participation Start Time:</strong> {{ event.participate_start_time }}</p>
+                            <p class="card-text"><strong>Participation End Time:</strong> {{ event.participate_end_time }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Participants</h2>
+                            {% if event.participants.exists %}
+                                    {% for participant in event.participants.all %}
+                                        <p>{{ participant.name }}</p>
+                                    {% endfor %}
+                            {% else %}
+                                No participants yet
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3">
+                <a href="{% url 'dashboard:event_update' event.id %}" class="btn btn-warning">Edit</a>
+                <a href="{% url 'dashboard:event_list' %}" class="btn btn-secondary">Back to Events</a>
+            </div>
+        </div> <!-- container -->
+    </div> <!-- content -->
+</div> <!-- content-page -->
+{% endblock %}

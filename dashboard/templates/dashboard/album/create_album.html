@@ -1,0 +1,147 @@
+
+
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %} 
+{% if instance %}Edit Album{% else %}Edit Album{% endif %}
+{% endblock %}
+{% block body %}
+<title>{% if instance %}Edit Album{% else %}Edit Album{% endif %}
+</title>
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <h4 class="page-title">{% if form.instance %}Edit Album{% else %}Add Album{% endif %}
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+                      
+                        <form method="post" enctype="multipart/form-data" action="">
+                            {% csrf_token %}
+                            {{album_form.media}}
+                                {% comment %} {% if messages %}
+                                {% for msg in messages %}
+                                    <div class="alert alert-{{ msg.tags }} alert-dismissible text-bg-{{ msg.tags }} border-0 fade show" role="alert">
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        <strong>{% if msg.tags == 'success' %}Success{% elif msg.tags == 'warning' %}Warning{% endif %} - </strong>{{ msg.message }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %} {% endcomment %}
+                
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Title</label>
+                                                {{album_form.title}}
+                                            </div>
+
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Company name</label>
+                                                {{album_form.company_name}}
+                                            </div>
+
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ album_form.image.id_for_label }}" class="form-label">image:</label>
+                                                <input type="file" name="{{ album_form.image.name }}" id="{{ album_form.image.id_for_label }}" class="form-control" 
+                                                {% if not album_form.instance.pk %}required{% endif %} onchange="showPreview(this);">
+                                                <div id="imageContainer" style="width:auto; height:auto;">
+                                                    <img class="img-fluid" id="imagePreview" src="{% if album_form.instance.pk and album_form.instance.image %}{{ album_form.instance.image.url }}{% endif %}" alt="" >
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xl-12">
+                                                <h3 style="margin-bottom: 30px;">Add more images:</h3>
+                                                <div id="field_list" >
+                                                    {{ formset.management_form }}
+                                                    {% for form in formset %}
+                                                            {{ form.as_p }}
+                                                    {% endfor %}
+                                                </div>
+                                                <button type="button" class="btn btn-secondary" style="margin-bottom:20px;"  id="add_field_button">Add Field</button>
+                                            </div>
+        
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-auto">
+                                                {% if album_form.instance.pk %}
+                                                    <button type="submit" class="btn btn-danger chat-send waves-effect waves-light">Update</button>
+                                                {% else %}
+                                                    <button type="submit" class="btn btn-danger chat-send waves-effect waves-light">Add</button>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <!-- end row -->
+
+                                </div> <!-- end card-->
+                            </div> <!-- end col-->
+                        </div>
+                        <!-- end row-->
+                    </form>
+
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+
+                <script>
+                    $(document).ready(function() {
+                        $("#category").change(function() {
+                            var url = $("#form").attr("data-courses-url");
+                            var programmingId = $(this).val();
+                            console.log(programmingId);
+                            $.ajax({
+                                url: url,
+                                data: {
+                                    'programming': programmingId
+                                },
+                                success: function(data) {
+                                    $("#courses").html(data);
+                                    //console.log(data);
+                                },
+                                error:function(data){
+                                    console.log(data);
+                                }
+                            });
+                        });
+                    });
+                </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('add_field_button').addEventListener('click', function() {
+        var formsetPrefix = '{{ formset.prefix }}';
+        var totalForms = parseInt(document.getElementById('id_' + formsetPrefix + '-TOTAL_FORMS').value);
+        var newFieldIndex = totalForms;  // Index of the new field form
+        var fieldList = document.getElementById('field_list');
+        var newFieldForm = document.createElement('div');
+        newFieldForm.className = 'form-row mb-3'; // Add class for styling
+        // Replace '__prefix__' in the formset HTML with the new index
+        var newFormsetHtml = '{{ formset.empty_form|escapejs }}'.replace(/__prefix__/g, newFieldIndex);
+        newFieldForm.innerHTML = newFormsetHtml;
+        fieldList.appendChild(newFieldForm);
+        // Update the TOTAL_FORMS count
+        document.getElementById('id_' + formsetPrefix + '-TOTAL_FORMS').value = totalForms + 1;
+    });
+});
+</script>
+{%endblock%}

@@ -1,0 +1,55 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}Add Users and Voting IDs{% endblock %}
+{% block body %}
+<title>Add Users and Voting IDs</title>
+
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <h4 class="page-title">Add Users and Voting IDs for {{ event.event_name }}</h4>
+                    </div>
+                </div>
+            </div>
+            
+            <form method="post" enctype="multipart/form-data" action="">
+                {% csrf_token %}
+                {{form.media}}
+                {{form.errors}}
+        
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Event</label>
+                                        <input type="text" class="form-control" value="{{ event.event_name }}" readonly>
+                                        <input type="hidden" name="event" value="{{ event.id }}">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">User</label>
+                                        {{form.user}}
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Voting ID</label>
+                                        {{form.voting_id}}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-danger chat-send waves-effect waves-light">Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

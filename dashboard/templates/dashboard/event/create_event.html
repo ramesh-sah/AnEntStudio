@@ -1,0 +1,231 @@
+
+
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %} 
+{% if instance %}Edit Event{% else %}Edit Event{% endif %}
+{% endblock %}
+{% block body %}
+<title>{% if instance %}Edit Event{% else %}Edit Event{% endif %}
+</title>
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <h4 class="page-title">{% if form.instance %}Edit Event{% else %}Add Event{% endif %}
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+                      
+                        <form method="post" enctype="multipart/form-data" action="">
+                            {% csrf_token %}
+                            {{form.media}}
+                            {{form.errors}}
+                                {% comment %} {% if messages %}
+                                {% for msg in messages %}
+                                    <div class="alert alert-{{ msg.tags }} alert-dismissible text-bg-{{ msg.tags }} border-0 fade show" role="alert">
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        <strong>{% if msg.tags == 'success' %}Success{% elif msg.tags == 'warning' %}Warning{% endif %} - </strong>{{ msg.message }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %} {% endcomment %}
+                
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        {% comment %} <h3>Event</h3> {% endcomment %}
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Category</label>
+                                                {{form.category}}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Genre</label>
+                                                {{form.genre}}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Event name</label>
+                                                {{form.event_name}}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.image.id_for_label }}" class="form-label">Image</label><br>
+                                                {{ form.image }}
+                                                <div class="option-image-preview-container" style="margin-top: 10px; display: none;">
+                                                    <img class="option-image-preview" src="" alt="Option Image preview" style="max-width: 100%; max-height: 100px;">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.another_image.id_for_label }}" class="form-label">Another Image</label><br>
+                                                {{ form.another_image }}
+                                                <div class="option-image-preview-container" style="margin-top: 10px; display: none;">
+                                                    <img class="option-image-preview" src="" alt="Option Image preview" style="max-width: 100%; max-height: 100px;">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {% comment %} <h4>Event date</h4> {% endcomment %}
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Event date</label><br>
+                                                {{ form.event_date }}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Event day</label><br>
+                                                {{ form.week_day }}
+                                                <div class="option-image-preview-container" style="margin-top: 10px; display: none;">
+                                                    <img class="option-image-preview" src="" alt="Option Image preview" style="max-width: 100%; max-height: 100px;">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {% comment %} <h3>Event date</h3> {% endcomment %}
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Participation start time</label><br>
+                                                {{ form.participate_start_time }}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Participation end time</label><br>
+                                                {{ form.participate_end_time }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Voting start time</label><br>
+                                                {{ form.voting_start_time }}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Voting end time</label><br>
+                                                {{ form.voting_end_time }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Contest start time</label><br>
+                                                {{ form.contest_start_time }}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Contest end time</label><br>
+                                                {{ form.contest_end_time }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Enter Location name</label><br>
+                                                {{ form.location }}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Enter Latitude</label><br>
+                                                {{ form.latitude }}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Enter Longitude</label><br>
+                                                {{ form.longitude }}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Event participations</label><br>
+                                                {{ form.participants}}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Event description</label><br>
+                                                {{ form.description}}
+                                            </div>
+                                            
+                                        </div>
+
+
+                                        <div class="row">
+                                            <div class="col-auto">
+                                                {% if form.instance.pk %}
+                                                    <button type="submit" class="btn btn-danger chat-send waves-effect waves-light">Update</button>
+                                                {% else %}
+                                                    <button type="submit" class="btn btn-danger chat-send waves-effect waves-light">Add</button>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <!-- end row -->
+
+                                </div> <!-- end card-->
+                            </div> <!-- end col-->
+                        </div>
+                        <!-- end row-->
+                    </form>
+
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+
+                <script>
+                    $(document).ready(function() {
+                        $("#category").change(function() {
+                            var url = $("#form").attr("data-courses-url");
+                            var programmingId = $(this).val();
+                            console.log(programmingId);
+                            $.ajax({
+                                url: url,
+                                data: {
+                                    'programming': programmingId
+                                },
+                                success: function(data) {
+                                    $("#courses").html(data);
+                                    //console.log(data);
+                                },
+                                error:function(data){
+                                    console.log(data);
+                                }
+                            });
+                        });
+                    });
+                </script>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Get the image input and the preview container
+                        var imageInput = document.querySelector('input[type="file"][name="{{ form.image.name }}"]');
+                        var previewContainer = document.querySelector('.option-image-preview-container');
+                        var previewImage = previewContainer.querySelector('.option-image-preview');
+                
+                        // Listen for changes on the image input
+                        imageInput.addEventListener('change', function () {
+                            var file = this.files[0]; // Get the selected file
+                
+                            if (file) { // If a file is selected
+                                var reader = new FileReader(); // Create a FileReader object
+                
+                                // When the file is read, update the image preview
+                                reader.onload = function (e) {
+                                    previewImage.src = e.target.result; // Set the image src to the file's data URL
+                                    previewContainer.style.display = 'block'; // Show the preview container
+                                }
+                
+                                reader.readAsDataURL(file); // Read the file as a data URL
+                            } else {
+                                previewContainer.style.display = 'none'; // Hide the preview container if no file is selected
+                                previewImage.src = ''; // Clear the image source
+                            }
+                        });
+                    });
+                </script>
+       {%endblock%}
