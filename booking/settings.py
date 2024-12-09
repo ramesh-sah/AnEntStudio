@@ -27,8 +27,8 @@ SECRET_KEY = 'django-insecure-ob32x4i7fzogqs9ldb(8)km^e32@!3enpq)#j2_^ugmw5+%ozr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['127.0.0.1', 'localhost' , '192.168.18.143']
-ALLOWED_HOSTS = ['myentstudio.com', 'https://myentstudio.com' , 'http://myentstudio.com', 'www.myentstudio.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost' , '192.168.18.143']
+# ALLOWED_HOSTS = ['myentstudio.com', 'https://myentstudio.com' , 'http://myentstudio.com', 'www.myentstudio.com']
 
 
 # Application definition
@@ -197,12 +197,12 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
 CORS_ORIGIN_ALLOW_ALL = False
-CORS_ALLOWED_ORIGINS = [
-    "myentstudio.com",
-    "https://myentstudio.com",
-    "http://myentstudio.com",
-    "www.myentstudio.com",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "myentstudio.com",
+#     "https://myentstudio.com",
+#     "http://myentstudio.com",
+#     "www.myentstudio.com",
+# ]
 
 
 
