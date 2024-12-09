@@ -1402,7 +1402,7 @@ class ContestView(APIView):
         serializer = ContestSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response({"success": "Contest created successfully"}, status=status.HTTP_201_CREATED)
+            return Response({"success": "Contest created successfully","contest_id":serializer.data['id']}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk, *args, **kwargs):
