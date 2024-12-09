@@ -1338,6 +1338,7 @@ class ContestDetailView(APIView):
 
 
 class ContestView(APIView):
+    permission_classes=[IsAuthenticated]
     """
     Handles CRUD operations for Contest.
     
@@ -1394,15 +1395,14 @@ class ContestView(APIView):
        
         
         
-    
     def post(self, request, *args, **kwargs):
         """
         Create a new Contest object.
         """
         serializer = ContestSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response({"success": "Contest created successfully","contest_id":serializer.data['id']}, status=status.HTTP_201_CREATED)
+            serializer.save(user=request.user)
+            return Response({"success": "Contest created successfully", "contest_id": serializer.data['id']}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk, *args, **kwargs):
@@ -1413,7 +1413,7 @@ class ContestView(APIView):
             obj = Contest.objects.get(id=pk)
             serializer = ContestSerializer(obj, data=request.data)
             if serializer.is_valid(raise_exception=True):
-                serializer.save()
+                serializer.save(user=request.user)
                 return Response({"success": "Contest updated successfully"}, status=status.HTTP_200_OK)
         except Contest.DoesNotExist:
             return Response({"error": "Contest not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -1427,7 +1427,7 @@ class ContestView(APIView):
             obj = Contest.objects.get(id=pk)
             serializer = ContestSerializer(obj, data=request.data, partial=True)
             if serializer.is_valid(raise_exception=True):
-                serializer.save()
+                serializer.save(user=request.user)
                 return Response({"success": "Contest updated successfully"}, status=status.HTTP_200_OK)
         except Contest.DoesNotExist:
             return Response({"error": "Contest not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -1479,7 +1479,7 @@ class ContestantLikeAPIView(APIView):
         # If not, proceed to save the like
         serializer = ContestantLikeSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -1506,7 +1506,7 @@ class ContestantFollowAPIView(APIView):
         # If not, proceed to save the like
         serializer = ContestantFollowSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
