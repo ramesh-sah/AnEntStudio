@@ -419,7 +419,7 @@ from .models import ContestTermConditions  # Make sure to import the model
 
 class ContestSerializer(serializers.ModelSerializer):
     # Nested serializer for related fields (User and ContestTermConditions)
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())  # Foreign key to User
+    # user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())  # Foreign key to User
     # contest_terms_condition = serializers.PrimaryKeyRelatedField(queryset=ContestTermConditions.objects.all())  # Foreign key to ContestTermConditions
     
 
@@ -428,6 +428,7 @@ class ContestSerializer(serializers.ModelSerializer):
         
         model = Contest
         fields = [
+            'id',
             'user',
             'event',
             'contest_terms_condition',
@@ -450,6 +451,7 @@ class ContestSerializer(serializers.ModelSerializer):
             
         ]
         read_only_fields = ['id']
+        read_only_fields = ['user']
 
     def validate_contestant_email(self, value):
         """
@@ -500,12 +502,14 @@ class ContestantLikeSerializer(serializers.ModelSerializer):
         model = ContestantLike
         fields = ['id', 'user', 'contest', 'like']
         read_only_fields = ['id']
+        read_only_fields =['user']
 
 class ContestantFollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContestantFollow
         fields = ['id', 'user', 'contest', 'follow']
         read_only_fields = ['id']
+        read_only_fields=['user']
         
         
         
