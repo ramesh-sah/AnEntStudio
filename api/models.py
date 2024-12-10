@@ -497,7 +497,9 @@ class ContestVideo(models.Model):
         related_name='videos',
         on_delete=models.CASCADE
     )
+    video_title=models.CharField(max_length=255)
     video_url = models.URLField()
+    
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
