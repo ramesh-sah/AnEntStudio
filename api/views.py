@@ -1534,19 +1534,37 @@ class ContestBulkPhotoUploadView(APIView):
 
 class ContestBulkVideoUploadView(APIView):
     def post(self, request, contest_id):
+        # Try to get the contest object based on the provided contest_id
         try:
             contest = Contest.objects.get(id=contest_id)
         except Contest.DoesNotExist:
-            return Response({"error": "Contest not found."}, status=status.HTTP_404_NOT_FOUND)
+            raise ValidationError("Contest not found")
 
-        serializer = ContestVideoUrlUploadSerializer(data=request.data, context={'contest': contest})
-        if serializer.is_valid():
-            videos = serializer.save()
-            return Response(
-                {"videos": [video.video_url for video in videos],"msg":"video url added successfully"}, 
-                status=status.HTTP_201_CREATED
-            )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # Get the list of video data from the request
+        video_data = request.data.get('videos', [])
+        
+        if not video_data:
+            return Response({"error": "No video data provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Initialize a list to hold the serialized video objects
+        serializer_list = []
+
+        # Loop through each video data and serialize
+        for video in video_data:
+            # Add the contest ID to the video data to associate it with the contest
+            video['contest'] = contest.id
+
+            serializer = ContestVideoUrlUploadSerializer(data=video)
+            if serializer.is_valid():
+                # Save the video to the database
+                serializer.save()
+                serializer_list.append(serializer.data)
+            else:
+                return Response({"error": "Invalid video data", "details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Return the list of serialized videos that were saved
+        return Response({"message": "Videos created successfully", "videos": serializer_list}, status=status.HTTP_201_CREATED)
+    
     
 from rest_framework.views import APIView
 from rest_framework.response import Response

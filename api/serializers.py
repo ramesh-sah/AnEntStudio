@@ -536,19 +536,12 @@ class ContestImageUploadSerializer(serializers.ModelSerializer):
     
 from .models import ContestVideo
 
-class ContestVideoUrlUploadSerializer(serializers.Serializer):
-    video_urls = serializers.ListField(
-        child=serializers.URLField(),
-        allow_empty=False
-    )
+class ContestVideoUrlUploadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContestVideo
+        fields = ['video_url', 'video_title', 'contest']
 
-    def create(self, validated_data):
-        contest = self.context['contest']  # Retrieve contest from the context
-        videos = []
-        for url in validated_data['video_urls']:
-            video = ContestVideo.objects.create(contest=contest, video_url=url)
-            videos.append(video)
-        return videos
+
 class ContestVideoUploadUrlSerializer(serializers.ModelSerializer):
     class Meta:
         model=ContestVideo
