@@ -559,7 +559,7 @@ class AdsRelatedVideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdsRelatedVideo
         fields = [
-            'id', 'ad', 'title', 'description', 'video_url',
+            'id', 'ad', 'description', 'video_url',
             'duration_in_seconds', 'created_at', 'updated_at'
         ]
         
