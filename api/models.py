@@ -26,7 +26,7 @@ class Slider(models.Model):
 
 class Add(models.Model):
     image = models.ImageField(upload_to='addimage/')
-
+    title = models.CharField(max_length=255, help_text="Title of the Ads")
     class Meta:
         verbose_name = "Add"
         verbose_name_plural = "Adds"
@@ -35,7 +35,6 @@ class Add(models.Model):
         
 class AdsRelatedVideo(models.Model):
     ad = models.ForeignKey(Add, on_delete=models.CASCADE, related_name="videos", help_text="The ad campaign this video is related to")
-    title = models.CharField(max_length=255, help_text="Title of the video")
     description = models.TextField(blank=True, null=True, help_text="Brief description of the video content")
     video_url = models.URLField(help_text="URL of the video")
     created_at = models.DateTimeField(auto_now_add=True, help_text="Time when the video was added")
