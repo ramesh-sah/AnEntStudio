@@ -19,7 +19,7 @@ urlpatterns = [
     path('sliders', SliderListAPIView.as_view(), name='sliders'),
     path('adds', AddListAPIView.as_view(), name='adds'),
     path('ads-related-videos',AdsRelatedVideoAPIView.as_view(),name='ads-related-videos-getAll'),
-    path('ads-related-videos/<int:pk>/',AdsRelatedVideoAPIView.as_view(),name='ads-related-videos-getSpecific'),
+    path('ads-related-videos/<int:ad_id>/',AdsRelatedVideoAPIView.as_view(),name='ads-related-videos-getSpecific'),
   
    
    

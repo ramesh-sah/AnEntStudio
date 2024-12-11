@@ -1631,15 +1631,15 @@ class AdsRelatedVideoAPIView(APIView):
     Handles fetching all videos or a single video based on the ID provided.
     """
 
-    def get(self, request, pk=None):
+    def get(self, request, ad_id=None):
         """
         GET all videos if no ID is provided; otherwise, get a single video by ID.
         """
-        if pk:
+        if ad_id:
             # Fetch a single video by ID
             try:
-                video = AdsRelatedVideo.objects.get(pk=pk)
-                serializer = AdsRelatedVideoSerializer(video)
+                video = AdsRelatedVideo.objects.filter(ad=ad_id).order_by('-created_at')
+                serializer = AdsRelatedVideoSerializer(video,many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             except AdsRelatedVideo.DoesNotExist:
                 return Response({"error": "Video not found"}, status=status.HTTP_404_NOT_FOUND)
