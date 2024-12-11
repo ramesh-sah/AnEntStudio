@@ -197,12 +197,12 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
 CORS_ORIGIN_ALLOW_ALL = False
-# CORS_ALLOWED_ORIGINS = [
-#     "myentstudio.com",
-#     "https://myentstudio.com",
-#     "http://myentstudio.com",
-#     "www.myentstudio.com",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "myentstudio.com",
+    "https://myentstudio.com",
+    "http://myentstudio.com",
+    "www.myentstudio.com",
+]
 
 
 
