@@ -431,7 +431,7 @@ class EventVotingSettingsDetailView(APIView):
             # Create a list of contestants with specific attributes
             approved_contests = [
                 {
-                    "contestant_id": contest["contestant_no"],
+                    "contestant_id": contest["id"],
                     "contestant_first_name": contest["contestant_first_name"],
                     "contestant_last_name": contest["contestant_last_name"],
                     "contestant_photo": contest["contestant_photo"],
