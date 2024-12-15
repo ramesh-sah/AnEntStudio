@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from account.serializers import UserSerializer
 from django.contrib.auth import get_user_model
-from . models import (AdsRelatedVideo, ContestTermConditions, EventContestantField, Slider, Add, Category, Event,  Image, VideoCategory, Video, Genre,
+from . models import (AdsRelatedVideo, BookTicket, ContestTermConditions, CreateTicket, EventContestantField, Slider, Add, Category, Event,  Image, VideoCategory, Video, Genre,
                         UserEventVoting, EventVotingSettings, Album, AlbumImage, VideoMenu,
                         PrivacyAndPolicy, TermsAndCondition, VideosForYou)
 
@@ -580,3 +580,15 @@ class EventSearchSerializers(serializers.ModelSerializer):
             'participate_status', 'voting_status', 'voting_end_time',
             'participant_count', 'participants', 'contest_status'
         ]
+        
+        
+class CreateTicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CreateTicket
+        fields = ['id','ticket_type','price_per_ticket','total_ticket_count']  # Includes all fields of the model
+        
+        
+class BookTicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BookTicket
+        fields = '__all__'  # Includes all fields of the model
