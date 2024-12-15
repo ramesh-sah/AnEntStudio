@@ -7,8 +7,8 @@ from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import AdsRelatedVideoSerializer, ContestImageUploadSerializer, ContestSerializer, ContestVideoUploadUrlSerializer, EventContestantFieldSerializer, EventSearchSerializers, UserVotingDetailSerializer, VideosForYouSerializer
-from .models import AdsRelatedVideo, Contest, EventContestantField, VideosForYou
+from .serializers import AdsRelatedVideoSerializer, BookTicketSerializer, ContestImageUploadSerializer, ContestSerializer, ContestVideoUploadUrlSerializer, CreateTicketSerializer, EventContestantFieldSerializer, EventSearchSerializers, UserVotingDetailSerializer, VideosForYouSerializer
+from .models import AdsRelatedVideo, BookTicket, Contest, CreateTicket, EventContestantField, VideosForYou
 
 from rest_framework.views import APIView
 from rest_framework import filters
@@ -1695,3 +1695,106 @@ class EventSearch(APIView):
 
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+
+
+
+
+class CreateTicketView(APIView):
+
+    def get(self, request, pk=None):
+        """
+        Handles GET requests. If `pk` is provided, retrieve a single ticket,
+        otherwise return all tickets.
+        """
+        if pk:
+            try:
+                ticket = CreateTicket.objects.get(pk=pk)
+                serializer = CreateTicketSerializer(ticket)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except CreateTicket.DoesNotExist:
+                return Response({'error': 'Ticket not found'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            tickets = CreateTicket.objects.all()
+            serializer = CreateTicketSerializer(tickets, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        """
+        Handles POST requests to create a new ticket.
+        """
+        serializer = CreateTicketSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
+
+    def patch(self, request, pk):
+        """
+        Handles PATCH requests to partially update an existing ticket.
+        """
+        try:
+            ticket = CreateTicket.objects.get(pk=pk)
+        except CreateTicket.DoesNotExist:
+            return Response({'error': 'Ticket not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = CreateTicketSerializer(ticket, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    
+class BookTicketView(APIView):
+    
+    
+    def post(self, request, *args, **kwargs):
+        """
+        Create a like for a contest, ensuring the user can only like a contest once.
+        """
+        # First, check if this user already liked this contest
+        user = request.data.get('user')
+        
+        
+        if ContestantFollow.objects.filter(user=user).exists():
+            return Response(
+                {"error": "You have already liked this contest."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # If not, proceed to save the like
+        serializer = BookTicketSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    def get(self, request, pk=None):
+        """
+        Handles GET requests. If `pk` is provided, retrieve a single ticket,
+        otherwise return all tickets.
+        """
+        if pk:
+            try:
+                ticket =BookTicket.objects.get(pk=pk)
+                serializer = BookTicketSerializer(ticket)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except CreateTicket.DoesNotExist:
+                return Response({'error': 'Ticket not found'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            tickets = BookTicket.objects.all()
+            serializer = BookTicketSerializer(tickets, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+    
+
+
+    
+
+

@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from . views import (AdsRelatedVideoAPIView, ContestBulkPhotoUploadView, ContestBulkVideoUploadView, ContestantViewOwnContest, EventContestantFieldView, EventSearch, SliderListAPIView, AddListAPIView, EventListAPIView,CategoryListAPIView,
+from . views import (AdsRelatedVideoAPIView, BookTicketView, ContestBulkPhotoUploadView, ContestBulkVideoUploadView, ContestantViewOwnContest, CreateTicketView, EventContestantFieldView, EventSearch, SliderListAPIView, AddListAPIView, EventListAPIView,CategoryListAPIView,
                     CategoryDetailAPIView,CategoryEventDetailAPIView, EventParticipationAPIView,
                     UserProfileListCreateAPIView, UserProfileDetailAPIView, 
                     ImageUploadAPIView, VideoUploadAPIView, GenreListAPIView, GenreDetailAPIView,
@@ -89,8 +89,13 @@ urlpatterns = [
     path('event-contestant-fields/<int:pk>/', EventContestantFieldView.as_view(), name='event-contestant-field-detail'),
     path('event-contestant-fields/', EventContestantFieldView.as_view(), name='event-contestant-field-detail'),
     
-     path('videos-for-you/', VideosForYouAPIView.as_view(), name='videos_for_you_list'),
+    path('videos-for-you/', VideosForYouAPIView.as_view(), name='videos_for_you_list'),
     path('videos-for-you/<int:pk>/', VideosForYouAPIView.as_view(), name='videos_for_you_detail'),
+    path('tickets/', CreateTicketView.as_view(), name='select-ticket-list'),
+    path('tickets/<int:pk>/', CreateTicketView.as_view(), name='select-ticket-detail'),
+    path('book-tickets/', BookTicketView.as_view(), name='select-ticket-list'),
+    path('book-tickets/<int:pk>/', BookTicketView.as_view(), name='select-ticket-detail'),
+    
      
      
 ]

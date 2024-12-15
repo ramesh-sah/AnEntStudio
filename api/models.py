@@ -560,8 +560,115 @@ class VideosForYou(models.Model):
         ordering = ['-created_at']
         verbose_name = "Video for You"
         verbose_name_plural = "Videos for You"
+        
+
+from django.core.exceptions import ValidationError
 
 
+class CreateTicket(models.Model):
+    TICKET_TYPE_CHOICES = [
+        ('PREMIUM', 'Premium Entry'),
+        ('VIP', 'VIP Entry'),
+        ('PREMIUM_VIP', 'Premium VIP Entry'),
+    ]
 
+    ticket_type = models.CharField(
+        max_length=15,
+        choices=TICKET_TYPE_CHOICES,
+        help_text="Select the type of ticket"
+    )
+    price_per_ticket = models.DecimalField(
+        max_digits=6, 
+        decimal_places=2, 
+        help_text="Price of the ticket (e.g., 1234.56)"
+    )
+    total_ticket_count = models.PositiveIntegerField(
+        help_text="Total number of tickets available"
+    )
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.get_ticket_type_display()} - ${self.price_per_ticket} ({self.total_ticket_count} remaining)"
 
+class BookTicket(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="booked_tickets")
+    event_id= models.ForeignKey(Event, on_delete=models.CASCADE, related_name='event_tickets')
+    premium_ticket = models.ForeignKey(
+        CreateTicket, 
+        on_delete=models.CASCADE, 
+        related_name="premium_bookings",
+        null=True, 
+        blank=True
+    )
+    vip_ticket = models.ForeignKey(
+        CreateTicket, 
+        on_delete=models.CASCADE, 
+        related_name="vip_bookings",
+        null=True, 
+        blank=True
+    )
+    premium_vip_ticket = models.ForeignKey(
+        CreateTicket, 
+        on_delete=models.CASCADE, 
+        related_name="premium_vip_bookings",
+        null=True, 
+        blank=True
+    )
+    premium_ticket_count = models.PositiveIntegerField(default=0, null=True, blank=True)
+    vip_ticket_count = models.PositiveIntegerField(default=0, null=True, blank=True)
+    premium_vip_ticket_count = models.PositiveIntegerField(default=0, null=True, blank=True)
+
+    total_price = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=0,
+        help_text="Total price of the ticket with premium + VIP + premium VIP prices"
+    )
+
+    full_name = models.CharField(max_length=255, help_text="Enter Your Name")
+    address = models.CharField(max_length=255, help_text="Enter Your Address")
+    contact_number = models.CharField(max_length=15, help_text="Enter Your Contact Number")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        """
+        Validate that the ticket counts do not exceed available tickets.
+        """
+        if self.premium_ticket and self.premium_ticket_count > self.premium_ticket.total_ticket_count:
+            raise ValidationError(f"Only {self.premium_ticket.total_ticket_count} Premium tickets are available.")
+
+        if self.vip_ticket and self.vip_ticket_count > self.vip_ticket.total_ticket_count:
+            raise ValidationError(f"Only {self.vip_ticket.total_ticket_count} VIP tickets are available.")
+
+        if self.premium_vip_ticket and self.premium_vip_ticket_count > self.premium_vip_ticket.total_ticket_count:
+            raise ValidationError(f"Only {self.premium_vip_ticket.total_ticket_count} Premium VIP tickets are available.")
+
+    def save(self, *args, **kwargs):
+        """
+        Custom save method to calculate total price and update ticket availability.
+        """
+        self.clean()
+
+        self.total_price = 0
+
+        if self.premium_ticket:
+            self.total_price += self.premium_ticket.price_per_ticket * self.premium_ticket_count
+            self.premium_ticket.total_ticket_count -= self.premium_ticket_count
+            self.premium_ticket.save()
+
+        if self.vip_ticket:
+            self.total_price += self.vip_ticket.price_per_ticket * self.vip_ticket_count
+            self.vip_ticket.total_ticket_count -= self.vip_ticket_count
+            self.vip_ticket.save()
+
+        if self.premium_vip_ticket:
+            self.total_price += self.premium_vip_ticket.price_per_ticket * self.premium_vip_ticket_count
+            self.premium_vip_ticket.total_ticket_count -= self.premium_vip_ticket_count
+            self.premium_vip_ticket.save()
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Booking by {self.full_name} - Total Price: ${self.total_price}"
