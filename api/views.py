@@ -1462,26 +1462,40 @@ class ContestantLikeAPIView(APIView):
         serializer = ContestantLikeSerializer(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+   
     def post(self, request, *args, **kwargs):
         """
         Create a like for a contest, ensuring the user can only like a contest once.
         """
-        # First, check if this user already liked this contest
-        user = request.data.get('user')
-        
-        
-        if ContestantLike.objects.filter(user=user).exists():
-            return Response(
-                {"error": "You have already liked this contest."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        
-        # If not, proceed to save the like
-        serializer = ContestantLikeSerializer(data=request.data)
+        data = request.data.copy()  # Create a mutable copy of the request data
+        data['user'] = request.user.id  # Set the user to the authenticated user
+
+        serializer = ContestantLikeSerializer(data=data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request,contest_id=None, *args, **kwargs):
+        """
+        Delete a like (ContestantFollow) by user and contest.
+        """
+        # Get the id of the contestant follow to delete
+        user_id = request.user.id  # Get the authenticated user
+        contest_id = kwargs.get('contest_id')  # Assuming contest_id is passed in the URL
+
+        try:
+            # Try to find the ContestantFollow instance to delete
+            follow_instance = ContestantFollow.objects.get(user_id=user_id, contest_id=contest_id)
+            
+            # Delete the found instance
+            follow_instance.delete()
+
+            return Response({"message": "Successfully deleted like."}, status=status.HTTP_204_NO_CONTENT)
+        
+        except ContestantFollow.DoesNotExist:
+            return Response({"error": "ContestantFollow not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class ContestantFollowAPIView(APIView):
     def get(self, request, *args, **kwargs):
@@ -1493,22 +1507,34 @@ class ContestantFollowAPIView(APIView):
         """
         Create a like for a contest, ensuring the user can only like a contest once.
         """
-        # First, check if this user already liked this contest
-        user = request.data.get('user')
-        
-        
-        if ContestantFollow.objects.filter(user=user).exists():
-            return Response(
-                {"error": "You have already liked this contest."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        
-        # If not, proceed to save the like
-        serializer = ContestantFollowSerializer(data=request.data)
+        data = request.data.copy()  # Create a mutable copy of the request data
+        data['user'] = request.user.id  # Set the user to the authenticated user
+
+        serializer = ContestantFollowSerializer(data=data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, contest_id=None,*args, **kwargs):
+        """
+        Delete a like (ContestantFollow) by user and contest.
+        """
+        # Get the id of the contestant follow to delete
+        user_id = request.user.id  # Get the authenticated user
+        
+
+        try:
+            # Try to find the ContestantFollow instance to delete
+            follow_instance = ContestantFollow.objects.get(user_id=user_id, contest_id=contest_id)
+            
+            # Delete the found instance
+            follow_instance.delete()
+
+            return Response({"message": "Successfully deleted like."}, status=status.HTTP_204_NO_CONTENT)
+        
+        except ContestantFollow.DoesNotExist:
+            return Response({"error": "ContestantFollow not found."}, status=status.HTTP_404_NOT_FOUND)
     
     
     

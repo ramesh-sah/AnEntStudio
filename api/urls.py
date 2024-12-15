@@ -80,7 +80,9 @@ urlpatterns = [
     path('contest/event-fields/<int:event_id>/', views.ContestDetailView.as_view(), name='event_contest_fields_detail '),
     path('contest/<int:pk>/', views.ContestView.as_view(), name='contest'),
     path('contestant-likes/', ContestantLikeAPIView.as_view(), name='contestant-like'),
+    path('contestant-unlikes/<int:contest_id>', ContestantLikeAPIView.as_view(), name='contestant-unlike'),
     path('contestant-follows/', ContestantFollowAPIView.as_view(), name='contestant-follow'),
+    path('contestant-unfollows/<int:contest_id>', ContestantFollowAPIView.as_view(), name='contestant-unfollow'),
     path('contestant-all-contest/',ContestantViewOwnContest.as_view(),name='contestant-view-all-own-contest'),
     
     path('contest/<int:contest_id>/upload-photos/', ContestBulkPhotoUploadView.as_view(), name='bulk-photo-upload'),

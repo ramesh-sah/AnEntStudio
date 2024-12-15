@@ -497,19 +497,40 @@ class ContestSerializer(serializers.ModelSerializer):
         
 from .models import ContestantLike, ContestantFollow
 
+
 class ContestantLikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContestantLike
         fields = ['id', 'user', 'contest', 'like']
         read_only_fields = ['id']
-        read_only_fields =['user']
+        
+
+    def validate(self, data):
+        user = data.get('user')
+        contest = data.get('contest')
+
+        # Check if the user has already liked this contest
+        if ContestantLike.objects.filter(user=user, contest=contest).exists():
+            raise serializers.ValidationError("You have already liked this contest.")
+        
+        return data
 
 class ContestantFollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContestantFollow
         fields = ['id', 'user', 'contest', 'follow']
         read_only_fields = ['id']
-        read_only_fields=['user']
+        
+        
+    def validate(self, data):
+        user = data.get('user')
+        contest = data.get('contest')
+
+        # Check if the user has already liked this contest
+        if ContestantLike.objects.filter(user=user, contest=contest).exists():
+            raise serializers.ValidationError("You have already liked this contest.")
+            
+        return data
         
         
         
