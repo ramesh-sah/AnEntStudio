@@ -1355,9 +1355,13 @@ class ContestView(APIView):
 
                 # Sum of 'like' for the Contest
                 contest_like_sum = ContestantLike.objects.filter(contest=pk).aggregate(total_likes=Sum('like'))
+                contest_like_status = ContestantLike.objects.filter(user_id=request.user.id)
+                
 
                 # Sum of 'follow' for the Contest
                 contest_follow_sum = ContestantFollow.objects.filter(contest=pk).aggregate(total_follows=Sum('follow'))
+                
+                contest_follow_status = ContestantFollow.objects.filter(user_id=request.user.id)
 
                 # Get contest images
                 contest_images = ContestPhoto.objects.filter(contest_id=pk)
@@ -1370,7 +1374,10 @@ class ContestView(APIView):
                 # Prepare response data
                 like_follow = {
                     'likes': contest_like_sum['total_likes'] or 0,
-                    'follows': contest_follow_sum['total_follows'] or 0
+                    'follows': contest_follow_sum['total_follows'] or 0,
+                    'like_status':bool(contest_like_status),
+                     'follow_status':bool(contest_follow_status),
+                    
                 }
                 videosUrl_images = {
                     'contest_images': contest_images_serializer.data,
